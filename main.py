@@ -16,10 +16,8 @@ class CardQuiz:
         print(f"|{question:^38}|{answer:^15}|")
         print("+" + "-" * 38 + "+")
     
-    def get_user_input(self, correct_answer):
-        user_input = input("Answer: ")
-        o = input(correct_answer)
-        return user_input, o
+    def get_user_input(self, prompt):
+        return input(prompt)
     
     def choose_question(self):
         wts = [len(i) * self.box_chance_mul[idx] for idx, i in enumerate(self.slots)]
@@ -46,25 +44,26 @@ class CardQuiz:
         self.slots[box_idx].append((q, a))
         return box_idx
 
-    def run(self):
+    def run_quiz(self):
         try:
             while True:
                 q, a, box_idx = self.choose_question()
                 self.display_question(q, a)
-                user_answer, o = self.get_user_input(f"The answer was: {a}\nWere you correct? (Y/n/exit): ")
-                if o and o[0].lower() == "e":
+                user_answer = self.get_user_input(f"The answer was: {a}\nWere you correct? (Y/n/exit): ")
+                if user_answer.lower().startswith("e"):
                     break
-                box_idx = self.update_performance(user_answer, o and o[0].lower() == "y", box_idx)
+                is_correct = user_answer.lower().startswith("y")
+                box_idx = self.update_performance(user_answer, is_correct, box_idx)
                 if len(cards) == len(self.slots[-1]):
-                    print(f"You have memorised all {self.total_questions} cards")
+                    print(f"You have memorized all {self.total_questions} cards")
                     accuracy = self.correct_count / self.total_questions if self.total_questions > 0 else 0
                     print(f"Performance Metrics:\nCorrect Answers: {self.correct_count}/{self.total_questions}\nAccuracy: {accuracy:.2%}")
-                    k = input("Exit? (N/y): ")
-                    if k and k[0].lower() == "y":
+                    exit_prompt = self.get_user_input("Exit? (N/y): ")
+                    if exit_prompt.lower().startswith("y"):
                         break
         except KeyboardInterrupt:
             print("\nProgram terminated by user.")
 
 if __name__ == "__main__":
     quiz = CardQuiz()
-    quiz.run()
+    quiz.run_quiz()
