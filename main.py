@@ -8,10 +8,13 @@ class CardQuiz:
         self.correct_count = 0
         self.total_questions = len(cards)
     
-    def display_question(self, question):
+    def display_question(self, question, answer):
         print(chr(27) + "[2J")
-        print(question)
-        print("-" * 4)
+        print("+" + "-" * 38 + "+")
+        print(f"|{'Question':^20}|{'Answer':^15}|")
+        print("+" + "-" * 38 + "+")
+        print(f"|{question:^38}|{answer:^15}|")
+        print("+" + "-" * 38 + "+")
     
     def get_user_input(self, correct_answer):
         user_input = input("Answer: ")
@@ -47,7 +50,7 @@ class CardQuiz:
         try:
             while True:
                 q, a, box_idx = self.choose_question()
-                self.display_question(q)
+                self.display_question(q, a)
                 user_answer, o = self.get_user_input(f"The answer was: {a}\nWere you correct? (Y/n/exit): ")
                 if o and o[0].lower() == "e":
                     break
